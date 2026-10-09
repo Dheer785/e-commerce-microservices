@@ -45,29 +45,44 @@ A backend e-commerce application built using Java, Spring Boot, and Spring Cloud
 - Centralized entry point for client requests
 
 ## Architecture
-```mermaid
+
 flowchart TD
-    Client[Client]
-    Gateway[API Gateway]
-    Eureka[Eureka Server]
+    Client["Client"]
+    Gateway["API Gateway"]
 
-    Gateway --> User[User Service]
-    Gateway --> Product[Product Service]
-    Gateway --> Order[Order Service]
-    Gateway --> Payment[Payment Service]
+    User["User Service"]
+    Product["Product Service"]
+    Order["Order Service"]
+    Inventory["Inventory Service"]
+    Payment["Payment Service"]
+    Notification["Notification Service"]
 
-    Order <--> Inventory[Inventory Service]
-    Payment --> Stripe[Stripe API]
+    Producer["OrderKafkaProducer"]
+    Kafka["Kafka: order-events"]
+    Consumer["OrderKafkaConsumer"]
+    Email["EmailService"]
+    Stripe["Stripe API<br/>PaymentIntent Creation"]
+    Eureka["Eureka Server"]
 
-    User -. Registration .-> Eureka
-    Product -. Registration .-> Eureka
-    Order -. Registration .-> Eureka
-    Inventory -. Registration .-> Eureka
-    Payment -. Registration .-> Eureka
+    Client --> Gateway
+    Gateway --> User
+    Gateway --> Product
+    Gateway --> Order
+    Gateway --> Payment
 
-    Order <--> Kafka[Apache Kafka]
-    Kafka <--> Inventory
-```
+    Order -. "If configured" .-> Inventory
+    Order --> Producer
+    Producer --> Kafka
+    Kafka --> Consumer
+    Consumer --> Email
+    Payment --> Stripe
+
+    User -.-> Eureka
+    Product -.-> Eureka
+    Order -.-> Eureka
+    Inventory -.-> Eureka
+    Payment -.-> Eureka
+    Notification -.-> Eureka
 
 
 *Architecture note: Adjust the arrows and Kafka connections to match your actual implementation. The diagram is illustrative, not a claim that every connection is already configured.*
