@@ -46,10 +46,12 @@ A backend e-commerce application built using Java, Spring Boot, and Spring Cloud
 
 ## Architecture
 
+## Architecture
+
+```mermaid
 flowchart TD
     Client["Client"]
     Gateway["API Gateway"]
-
     User["User Service"]
     Product["Product Service"]
     Order["Order Service"]
@@ -61,7 +63,7 @@ flowchart TD
     Kafka["Kafka: order-events"]
     Consumer["OrderKafkaConsumer"]
     Email["EmailService"]
-    Stripe["Stripe API<br/>PaymentIntent Creation"]
+    Stripe["Stripe API: PaymentIntent Creation"]
     Eureka["Eureka Server"]
 
     Client --> Gateway
@@ -70,7 +72,6 @@ flowchart TD
     Gateway --> Order
     Gateway --> Payment
 
-    Order -. "If configured" .-> Inventory
     Order --> Producer
     Producer --> Kafka
     Kafka --> Consumer
@@ -83,9 +84,7 @@ flowchart TD
     Inventory -.-> Eureka
     Payment -.-> Eureka
     Notification -.-> Eureka
-
-
-*Architecture note: Adjust the arrows and Kafka connections to match your actual implementation. The diagram is illustrative, not a claim that every connection is already configured.*
+```
 
 ## Kafka Integration
 
