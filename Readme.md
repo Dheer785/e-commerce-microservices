@@ -74,14 +74,31 @@ flowchart TD
 
 ## Kafka Integration
 
-Apache Kafka can be used for asynchronous communication between services.
+The Notification Service contains an Apache Kafka consumer for order events.
 
-Typical use cases include:
-- Publishing order events.
-- Consuming order events in inventory or other downstream services.
-- Reducing direct dependencies between services.
+- **Topic:** `order-events`
+- **Consumer group:** `notification-order-group`
+- **Message format:** JSON
+- **Processed fields:** Order ID (`id`), total amount (`totalAmount`), and status (`status`)
+- **Notification behavior:** Calls `EmailService.sendPaymentEmail()` when the order status is `CREATED`.
 
-Document the actual topic names, producers, consumers, and event payloads from your implementation.
+The producer configuration, broker connectivity, and end-to-end message delivery should be verified before claiming the complete Kafka workflow as operational.
+### Order Event Messaging
+
+The Order Service publishes order events to Apache Kafka using `OrderKafkaProducer`. The Notification Service consumes messages from the `order-events` topic using `OrderKafkaConsumer`.
+
+**Producer**
+- Class: `OrderKafkaProducer`
+- Topic: `order-events`
+- Method: `sendOrderEvent(Object order)`
+
+**Consumer**
+- Class: `OrderKafkaConsumer`
+- Consumer group: `notification-order-group`
+- Parses order ID, total amount, and status from the JSON message.
+- Calls `EmailService.sendPaymentEmail()` when the status is `CREATED`.
+
+The producer and consumer implementations are present in the codebase. End-to-end delivery and email sending should be verified in a running environment.
 
 ## Stripe Payment Integration
 
