@@ -45,7 +45,6 @@ A backend e-commerce application built using Java, Spring Boot, and Spring Cloud
 - Centralized entry point for client requests
 
 ## Architecture
-
 ```mermaid
 flowchart TD
     Client[Client]
@@ -69,6 +68,7 @@ flowchart TD
     Order <--> Kafka[Apache Kafka]
     Kafka <--> Inventory
 ```
+
 
 *Architecture note: Adjust the arrows and Kafka connections to match your actual implementation. The diagram is illustrative, not a claim that every connection is already configured.*
 
